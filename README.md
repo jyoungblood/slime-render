@@ -23,7 +23,7 @@ require __DIR__ . '/vendor/autoload.php';
 
 # Usage
 ## render::hbs($request, $response, $parameters)
-Renders a specific Handlebars template with an array of data, including any partials and global `locals` variables array. Returns a standard Slim (PSR7) response object with optional HTTP status code.
+Renders a specific Handlebars template with an array of data, including any partials and global `locals` variables array. Returns a standard Slim (PSR-7) response object with optional HTTP status code.
 ```php
 $app->get('/', function ($req, $res, $args) {
 
@@ -58,7 +58,7 @@ $GLOBALS['locals'] = [
 
 
 ## render::json($request, $response, $parameters)
-Renders an array or data as standard Slim (PSR7) response object with `application/json` content type and optional HTTP status code.
+Renders an array or data as standard Slim (PSR-7) response object with `application/json` content type and optional HTTP status code.
 ```php
 $app->get('/json/', function ($req, $res, $args) {
 
