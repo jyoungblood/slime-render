@@ -7,7 +7,7 @@ Included with the [Slime boilerplate](https://github.com/hxgf/slime) for Slim ap
 # Installation
 Easy install with composer:
 ```
-composer require hxgf/slime-render:0.1.0@dev
+composer require hxgf/slime-render
 ```
 ```php
 use Slime\render;
