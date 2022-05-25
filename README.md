@@ -43,17 +43,23 @@ $app->get('/', function ($req, $res, $args) {
 });
 ```
 
-The parser function expects a template path and default file extension to be defined in a global `settings` array, in addition to any `locals` variables you'd like to make available for all templates, like this:
+The parser function expects templates to be in a `templates` directory with `html` file extension. This can be customized by defining these variables in a global `settings` array:
 ```php
-$GLOBALS['settings']['templates']['path'] = __DIR__ . '/templates';
-$GLOBALS['settings']['templates']['extension'] = '.html';
+$GLOBALS['settings']['templates']['path'] = 'pages';
+$GLOBALS['settings']['templates']['extension'] = 'hbs';
+```
 
+Additionally, an array of `locals` can be added to make variables available across all templates:
+```php
 $GLOBALS['locals'] = [
   'year' => date('Y'),
   'site_title' => 'Web Site Title',
   'site_code' => 'WST',
   'site_domain' => 'example.com',
 ];
+```
+```html
+Welcome to {{locals.site_title}}, the year is {{locals.year}}!
 ```
 
 
