@@ -1,6 +1,6 @@
 # SLIME Render
 
-### PHP abstraction functions to help more easily render views for [Slim Framework](https://www.slimframework.com/) with [LightnCandy](https://github.com/zordius/lightncandy) (handlebars) or [Twig](https://github.com/slimphp/Twig-View).
+### PHP abstraction functions to help more easily render views for [Slim Framework](https://www.slimframework.com/) (v4) with [LightnCandy](https://github.com/zordius/lightncandy) (Handlebars) or [Twig](https://github.com/slimphp/Twig-View).
 
 Included with the [Slime boilerplate](https://github.com/hxgf/slime) for Slim applications.
 
@@ -62,6 +62,28 @@ $GLOBALS['locals'] = [
 Welcome to {{locals.site_title}}, the year is {{locals.year}}!
 ```
 
+Check out the [Handlebars Cookbook](https://zordius.github.io/HandlebarsCookbook/) to see everything you can do with LightnCandy and Handlebars.
+
+Additionally, we've included a couple of helper functions.
+
+The `date` helper applies the PHP `date()` function to a given variable (or `now` keyword for the current time)
+```html
+Current date: {{date now "d/m/Y"}}
+```
+The `#is` block helper allows for basic conditional logic:
+```html
+Is it 1981? {{#is locals.year "==" "1981"}} Yes! {{else}} No! {{/is}}
+```
+
+
+## render::redirect($request, $response, $parameters)
+Renders a redirect as standard Slim (PSR-7) response object with optional HTTP status code.
+```php
+  return render::redirect($req, $res, [
+    'location' => 'https://google.com',
+    'status' => 301 // optional, default is 302
+  ]);
+```
 
 ## render::json($request, $response, $parameters)
 Renders an array or data as standard Slim (PSR-7) response object with `application/json` content type and optional HTTP status code.
@@ -85,7 +107,7 @@ $app->get('/json/', function ($req, $res, $args) {
 
 ## render::lightncandy_html($parameters)($data)
 Prepares and compiles a specific Handlebars template with an array of data, including any partials and global `locals` variables array.<br />
-This is automatically called by `rebder::hbs()` but can be used as a standalone function if desired.
+This is automatically called by `render::hbs()` but can be used as a standalone function if desired.
 ```php
 $args = [
   'template' => 'index',
@@ -102,6 +124,10 @@ $data = [
 
 echo render::lightncandy_html($args)($data);
 ```
+
+## render::initialize_handlebars_helpers()
+For internal use by `lightncandy_html()`. Defines a couple custom Handlebars helper functions to be used by the LightnCandy compiler.
+
 
 ## render::twig($request, $response, $parameters)
 Similar to `render::hbs()` except with Twig templates.
