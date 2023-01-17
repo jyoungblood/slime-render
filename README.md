@@ -66,7 +66,7 @@ Check out the [Handlebars Cookbook](https://zordius.github.io/HandlebarsCookbook
 
 Additionally, we've included a couple of helper functions.
 
-The `date` helper applies the PHP `date()` function to a given variable (or `now` keyword for the current time)
+The `date` helper applies the PHP `date()` function to a given variable or string (or `now` keyword for the current time)
 ```html
 Current date: {{date now "d/m/Y"}}
 ```
