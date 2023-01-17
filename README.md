@@ -2,6 +2,8 @@
 
 ### PHP abstraction functions to help more easily render views for [Slim Framework](https://www.slimframework.com/) (v4) with [LightnCandy](https://github.com/zordius/lightncandy) (Handlebars) or [Twig](https://github.com/slimphp/Twig-View).
 
+These functions aim to provide a simplified and standardized interface for rendering various types of data-driven responses as PSR-7 objects for use with Slim.
+
 Included with the [Slime boilerplate](https://github.com/hxgf/slime) for Slim applications.
 
 # Installation
