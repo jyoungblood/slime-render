@@ -75,6 +75,7 @@ The `#is` block helper allows for basic conditional logic:
 Is it 1981? {{#is locals.year "==" "1981"}} Yes! {{else}} No! {{/is}}
 ```
 
+Custom helpers are easy to create. Take a look at how these helpers are defined in [initialize_handlebars_helpers()](https://github.com/hxgf/slime-render/blob/74e6e4a89a90a2490196a4d50d7466855820dd3a/src/render.php#L46). The Handlebars cookbook also has a reference for creating [custom helpers](https://zordius.github.io/HandlebarsCookbook/0021-customhelper.html) and [custom block helpers](https://zordius.github.io/HandlebarsCookbook/0022-blockhelper.html).
 
 ## render::redirect($request, $response, $parameters)
 Renders a redirect as standard Slim (PSR-7) response object with optional HTTP status code.

@@ -91,7 +91,8 @@ class render {
       }else{
         return $options['inverse']();
       }
-    };         
+    }; 
+            
   }
 
   // render a LightnCandy template, compiled with HBS settings
