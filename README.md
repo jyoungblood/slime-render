@@ -24,6 +24,28 @@ require __DIR__ . '/vendor/autoload.php';
 
 
 # Usage
+## render::html($request, $response, $string, $status = 200)
+Renders a string as html. Returns a standard Slim (PSR-7) response object with optional HTTP status code (200 by default).
+```php
+$app->get('/', function ($req, $res, $args) {
+
+  return render::html($req, $res, '<h2>Hey whats up</h2>');
+
+});
+```
+
+
+## render::text($request, $response, $string, $status = 200)
+Renders a string as html. Returns a standard Slim (PSR-7) response object with optional HTTP status code (200 by default).
+```php
+$app->get('/', function ($req, $res, $args) {
+
+  return render::text($req, $res, 'Hey whats up');
+
+});
+```
+
+
 ## render::hbs($request, $response, $parameters)
 Renders a specific Handlebars template with an array of data, including any partials and global `locals` variables array. Returns a standard Slim (PSR-7) response object with optional HTTP status code.
 ```php

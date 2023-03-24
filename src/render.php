@@ -2,7 +2,7 @@
 
 /**
  * @package    SLIME Render
- * @version    1.2.0
+ * @version    1.2.1
  * @author     Jonathan Youngblood <jy@hxgf.io>
  * @license    https://github.com/hxgf/slime-render/blob/master/LICENSE.md (MIT License)
  * @source     https://github.com/hxgf/slime-render
@@ -142,6 +142,20 @@ class render {
     return $res->withHeader('Location', $args['location'])->withStatus($args['status']);
   }
 
+  // return an HTML string
+  public static function html($req, $res, $html, $status = 200){
+    $body = $res->getBody();
+    $body->write($html);
+    return $res->withStatus($status);
+  }
+
+  // return a plain text string
+  public static function text($req, $res, $text, $status = 200){
+    $body = $res->getBody();
+    $body->write($text);
+    return $res->withHeader('Content-Type', 'text/plain')->withStatus($status);
+  }
+  
 }
 
 ?>
