@@ -36,7 +36,7 @@ $app->get('/', function ($req, $res, $args) {
 
 
 ## render::text($request, $response, $string, $status = 200)
-Renders a string as html. Returns a standard Slim (PSR-7) response object with optional HTTP status code (200 by default).
+Renders a string as plain text. Returns a standard Slim (PSR-7) response object with optional HTTP status code (200 by default).
 ```php
 $app->get('/', function ($req, $res, $args) {
 
