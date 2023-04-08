@@ -95,6 +95,12 @@ $GLOBALS['locals'] = [
 Welcome to {{locals.site_title}}, the year is {{locals.year}}!
 ```
 
+Parameters from PHP $_GET and $_POST variables are automatically made available to templates rendered with this function, using the variables `{{GET}}` and `{{POST}}`:
+```html
+<!-- assuming a url like /hello/?name=Delilah&location=New%20York%20%City -->
+Hey there, {{GET.name}}, what's it like in {{GET.location}}?
+```
+
 Check out the [Handlebars Cookbook](https://zordius.github.io/HandlebarsCookbook/) to see everything you can do with LightnCandy and Handlebars.
 
 Additionally, we've included a couple of helper functions.
