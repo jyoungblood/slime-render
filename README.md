@@ -24,7 +24,7 @@ require __DIR__ . '/vendor/autoload.php';
 
 # Usage
 ## render::html($request, $response, $string, $status = 200)
-Renders a string as html. Returns a standard Slim (PSR-7) response object with optional HTTP status code (200 by default).
+Renders a string as HTML. Returns a standard Slim (PSR-7) response object with optional HTTP status code (200 by default).
 ```php
 $app->get('/', function ($req, $res, $args) {
 
@@ -33,7 +33,7 @@ $app->get('/', function ($req, $res, $args) {
 });
 ```
 
-Additionally, a path to a .html file can be specified to load and render instead of a string:
+Additionally, a path to an HTML file can be specified to load and render instead of a string:
 ```php
 $app->get('/', function ($req, $res, $args) {
 
@@ -103,7 +103,7 @@ The `date` helper applies the PHP `date()` function to a given variable or strin
 ```html
 Date from unix timestamp: {{date unix_ts_var "d/m/Y"}}
 Current date: {{date "now" "d/m/Y"}} <!-- use the "now" keyword instead of a variable to use the current time -->
-Date from non-unix timestamp: {{date non_unix_ts_var "d/m/Y" "convert"}} <!-- adding the "convert" parameter will convert the variable to unix time using strtotime() -->
+Date from non-unix timestamp: {{date non_unix_ts_var "d/m/Y" "convert"}} <!-- add the "convert" parameter to convert the variable to unix time using strtotime() -->
 ```
 The `#is` block helper allows for basic conditional logic:
 ```html
