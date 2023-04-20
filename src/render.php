@@ -98,7 +98,7 @@ class render {
     render::initialize_handlebars_helpers();
     return LightnCandy::prepare(
       LightnCandy::compile($template, array(
-        "flags" => LightnCandy::FLAG_ELSE | LightnCandy::FLAG_PARENT,
+        "flags" => LightnCandy::FLAG_HANDLEBARS,
         "partials" => $partials,
         "helpers" => $GLOBALS['hbars_helpers']
       ))
