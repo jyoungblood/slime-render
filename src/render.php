@@ -2,7 +2,7 @@
 
 /**
  * @package    SLIME Render
- * @version    1.3.0
+ * @version    1.3.1
  * @author     Jonathan Youngblood <jy@hxgf.io>
  * @license    https://github.com/hxgf/slime-render/blob/master/LICENSE.md (MIT License)
  * @source     https://github.com/hxgf/slime-render
