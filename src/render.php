@@ -2,7 +2,7 @@
 
 /**
  * @package    SLIME Render
- * @version    1.3.1
+ * @version    1.3.2
  * @author     Jonathan Youngblood <jy@hxgf.io>
  * @license    https://github.com/hxgf/slime-render/blob/master/LICENSE.md (MIT License)
  * @source     https://github.com/hxgf/slime-render
@@ -126,6 +126,27 @@ class render {
     $body = $res->getBody();
     $body->write(render::lightncandy_html($args)($data));
     return $res->withStatus($status);
+  }
+
+  // return a rendered LightnCandy/HBS template as raw html
+  public static function handlebars($args){
+    $data = [];
+    if (isset($GLOBALS['locals'])){
+      $data['locals'] = $GLOBALS['locals'];
+    }
+    if (isset($_GET)){
+      $data['GET'] = $_GET;
+    }
+    if (isset($_POST)){
+      $data['POST'] = $_POST;
+    }
+    if (isset($args['data'])){
+      $data = array_merge($data, $args['data']);
+    }
+    if (isset($args['title'])){
+      $data['title'] = $args['title'];
+    }
+    return render::lightncandy_html($args)($data);
   }
 
   // return a url redirect
