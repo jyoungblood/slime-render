@@ -4,8 +4,8 @@
  * @package    SLIME Render
  * @version    1.3.2
  * @author     Jonathan Youngblood <jy@hxgf.io>
- * @license    https://github.com/hxgf/slime-render/blob/master/LICENSE.md (MIT License)
- * @source     https://github.com/hxgf/slime-render
+ * @license    https://github.com/jyoungblood/slime-render/blob/master/LICENSE.md (MIT License)
+ * @source     https://github.com/jyoungblood/slime-render
  */
 
 namespace Slime;

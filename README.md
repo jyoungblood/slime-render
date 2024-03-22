@@ -4,12 +4,12 @@
 
 These functions aim to provide a simplified and standardized interface for rendering various types of data-driven responses as PSR-7 objects for use with Slim.
 
-Included with the [Slime boilerplate](https://github.com/hxgf/slime) for Slim applications.
+Included with the [Slime boilerplate](https://github.com/jyoungblood/slime) for Slim applications.
 
 # Installation
 Easy install with composer:
 ```
-composer require hxgf/slime-render
+composer require jyoungblood/slime-render
 ```
 ```php
 use Slime\render;
@@ -116,7 +116,7 @@ The `#is` block helper allows for basic conditional logic:
 Is it 1981? {{#is locals.year "==" "1981"}} Yes! {{else}} No! {{/is}}
 ```
 
-Custom helpers are easy to create. Take a look at how these helpers are defined in [initialize_handlebars_helpers()](https://github.com/hxgf/slime-render/blob/74e6e4a89a90a2490196a4d50d7466855820dd3a/src/render.php#L46). The Handlebars cookbook also has a reference for creating [custom helpers](https://zordius.github.io/HandlebarsCookbook/0021-customhelper.html) and [custom block helpers](https://zordius.github.io/HandlebarsCookbook/0022-blockhelper.html).
+Custom helpers are easy to create. Take a look at how these helpers are defined in [initialize_handlebars_helpers()](https://github.com/jyoungblood/slime-render/blob/74e6e4a89a90a2490196a4d50d7466855820dd3a/src/render.php#L46). The Handlebars cookbook also has a reference for creating [custom helpers](https://zordius.github.io/HandlebarsCookbook/0021-customhelper.html) and [custom block helpers](https://zordius.github.io/HandlebarsCookbook/0022-blockhelper.html).
 
 ## render::handlebars($parameters)
 Renders a specicific Handlebars template with data array the same as `render::hbs()`, but returns raw html instead of a PSR-7 response.
