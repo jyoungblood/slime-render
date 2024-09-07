@@ -2,15 +2,21 @@
 
 /**
  * @package    SLIME Render
- * @version    1.3.2
+ * @version    1.3.3
  * @author     Jonathan Youngblood <jy@hxgf.io>
- * @license    https://github.com/jyoungblood/slime-render/blob/master/LICENSE.md (MIT License)
- * @source     https://github.com/jyoungblood/slime-render
+ * @license    https://github.com/hxgf/slime-render/blob/master/LICENSE.md (MIT License)
+ * @source     https://github.com/hxgf/slime-render
  */
 
 namespace Slime;
 
 use LightnCandy\LightnCandy;
+
+use eftec\bladeone\BladeOne;
+use eftec\bladeonehtml\BladeOneHtml;
+class BladeHTML extends BladeOne {
+  use BladeOneHtml;
+}
 
 class render {
 
@@ -169,6 +175,26 @@ class render {
     $body = $res->getBody();
     $body->write($text);
     return $res->withHeader('Content-Type', 'text/plain')->withStatus($status);
+  }
+
+  // return a rendered Blade template
+  public static function blade_template($template, $data = []){
+    // $blade = new BladeOne('./views','./cache',BladeOne::MODE_DEBUG); // MODE_DEBUG allows to pinpoint troubles.
+    $blade = new BladeHTML('./views','./cache');
+    $blade->pipeEnable=true;
+    return $blade->run($template, $data);
+  }
+
+  // return a rendered Blade template
+  public static function blade($req, $res, $args, $status = 200){
+    $body = $res->getBody();
+    $body->write(
+      render::blade_template(
+        $args['template'],
+        $args['data']
+      )
+    );
+    return $res->withStatus($status);
   }
   
 }
