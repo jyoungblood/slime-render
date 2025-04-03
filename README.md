@@ -192,15 +192,10 @@ We've also created a `component` helper, which allows you to define components t
 
 Here are some examples of how to use components:
 
-### Basic Card Component Example
-```handlebars
-{{{component "card" title="My Card Title"}}}
-  <p>This is the slot content that will appear inside the card.</p>
-  <p>You can put any HTML content here.</p>
-{{{/component}}}
-```
 
-### Input Component with All Attributes
+
+### Simple Component
+In the primary template:
 ```handlebars
 {{{component "input" 
   label="Username" 
@@ -208,9 +203,46 @@ Here are some examples of how to use components:
   width="w-80" 
   padding="pa3"
   name="username" 
-  value="john_doe"
+  value="j_lennon"
 }}}
 ```
+
+In `templates/_components/input.html`:
+```handlebars
+<div class="mb2 {{width}} {{padding}}">
+  <label class="db mb2 fw7">{{label}}</label>
+  <input class="db w-100 pa2 f5" type="{{type}}" name="{{name}}" value="{{value}}" />
+</div>
+```
+
+In `templates/_components/input.assets.html`:
+```handlebars
+<!-- will only be included once, no matter how many instances of `input` component are included on the page -->
+<script src="/js/lib/uppy.min.js"></script>
+<link href="/css/lib/uppy.min.css" rel="stylesheet">
+<script src="/js/lib/sortable.min.js"></script>
+```
+
+
+### Slot Component
+In the primary template:
+```handlebars
+{{{component "card" title="My Card Title"}}}
+  <p>This is the slot content that will appear inside the card.</p>
+  <p>You can put any HTML content here.</p>
+{{{/component}}}
+```
+
+In `templates/_components/card.html`:
+```handlebars
+<div class="pa3 ba b--black-20 br2 mb4 shadow-4">
+  <h3 class="mt0 mb2">{{title}}</h3>
+  <div class="card-content">
+    {{slot}}
+  </div>
+</div>
+```
+
 
 ### Nested Components (Card containing Inputs)
 ```handlebars
@@ -233,66 +265,6 @@ Here are some examples of how to use components:
 {{{/component}}}
 ```
 
-### Dynamic Values from Context
-```handlebars
-{{{component "input" 
-  label="Search" 
-  type="search" 
-  width="w-100" 
-  name="query" 
-  value=search.query
-}}}
-```
-
-### Multiple Components with Different Styles
-```handlebars
-{{{component "input" 
-  label="Small Input" 
-  type="text" 
-  width="w-30" 
-  padding="pa2"
-  name="small" 
-  value="small value"
-}}}
-
-{{{component "input" 
-  label="Large Input" 
-  type="text" 
-  width="w-100" 
-  padding="pa4"
-  name="large" 
-  value="large value"
-}}}
-```
-
-### Form with Multiple Components
-```handlebars
-<form action="/submit" method="post">
-  {{{component "input" 
-    label="First Name" 
-    type="text" 
-    width="w-50" 
-    name="firstName" 
-    value=form.firstName
-  }}}
-  
-  {{{component "input" 
-    label="Last Name" 
-    type="text" 
-    width="w-50" 
-    name="lastName" 
-    value=form.lastName
-  }}}
-  
-  {{{component "input" 
-    label="Password" 
-    type="password" 
-    width="w-100" 
-    name="password" 
-    value=""
-  }}}
-</form>
-```
 
 Key features of the component helper:
 - Use triple curly braces `{{{component}}}` to ensure HTML is not escaped
