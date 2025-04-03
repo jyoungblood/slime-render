@@ -84,7 +84,78 @@ class render {
         return $options['inverse']();
       }
     }; 
-            
+
+    $GLOBALS['hbars_helpers']['@'] = function() {
+      static $template_cache = [];
+      static $loaded_assets = [];
+      static $component_paths = [];
+      
+      $args = func_get_args();
+      $options = end($args);
+      $root = $options['data']['root'] ?? [];
+      
+      // Get component name - early return if invalid
+      $component_name = $args[0] ?? null;
+      if (!$component_name) {
+        return 'ERROR: No component name provided';
+      }
+      
+      // Cache component paths
+      if (!isset($component_paths[$component_name])) {
+        $template_path = isset($GLOBALS['settings']['templates']['path']) ? $GLOBALS['settings']['templates']['path'] : 'templates';
+        $template_extension = isset($GLOBALS['settings']['templates']['extension']) ? $GLOBALS['settings']['templates']['extension'] : 'html';
+        $component_paths[$component_name] = [
+          'template' => "./$template_path/_components/{$component_name}.{$template_extension}",
+          'assets' => "./$template_path/_components/{$component_name}.assets.{$template_extension}"
+        ];
+      }
+      
+      // Get cached paths
+      $paths = $component_paths[$component_name];
+      
+      // Load template - early return if not found
+      if (!isset($template_cache[$paths['template']])) {
+        if (!file_exists($paths['template'])) {
+          return "ERROR: Component not found at {$paths['template']}";
+        }
+        $template_cache[$paths['template']] = file_get_contents($paths['template']);
+      }
+      
+      // Get assets if needed
+      $assets_html = '';
+      if (!isset($loaded_assets[$component_name]) && file_exists($paths['assets'])) {
+        $assets_html = file_get_contents($paths['assets']);
+        $loaded_assets[$component_name] = true;
+      }
+      
+      // Process template
+      $template = $template_cache[$paths['template']];
+      
+      // Handle slot content if present
+      if (isset($options['fn']) && is_callable($options['fn'])) {
+        $template = str_replace('{{slot}}', $options['fn']($root), $template);
+      }
+      
+      // Process hash values efficiently
+      if (!empty($options['hash'])) {
+        $replacements = [];
+        foreach ($options['hash'] as $key => $value) {
+          if (is_array($value) && isset($value['lookupType']) && $value['lookupType'] === 'lookup') {
+            $value = ($value['context'] ?? $root)[$value['key'] ?? ''] ?? '';
+          }
+          $replacements['{{'.$key.'}}'] = $value ?? '';
+        }
+        
+        // Single strtr() call is faster than multiple str_replace()
+        $template = strtr($template, $replacements);
+      }
+      
+      // Clean up remaining variables with single regex
+      $template = preg_replace('/{{[^}]+}}/', '', $template);
+      
+      return $assets_html . $template;
+    };
+
   }
 
   // render a LightnCandy template, compiled with HBS settings

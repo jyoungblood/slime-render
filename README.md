@@ -91,28 +91,28 @@ $GLOBALS['locals'] = [
   'site_domain' => 'example.com',
 ];
 ```
-```html
+```handlebars
 Welcome to {{locals.site_title}}, the year is {{locals.year}}!
 ```
 
 Parameters from PHP $_GET and $_POST variables are automatically made available to templates rendered with this function, using the variables `{{GET}}` and `{{POST}}`:
-```html
+```handlebars
 <!-- assuming a url like /hello/?name=Delilah&location=New%20York%20City -->
 Hey there, {{GET.name}}, what's it like in {{GET.location}}?
 ```
 
 Check out the [Handlebars Cookbook](https://zordius.github.io/HandlebarsCookbook/) to see everything you can do with LightnCandy and Handlebars.
 
-Additionally, we've included a couple of helper functions.
+Additionally, we've included a few helper functions.
 
 The `date` helper applies the PHP `date()` function to a given variable or string (or `now` keyword for the current time)
-```html
+```handlebars
 Date from unix timestamp: {{date unix_ts_var "d/m/Y"}}
 Current date: {{date "now" "d/m/Y"}} <!-- use the "now" keyword instead of a variable to use the current time -->
 Date from non-unix timestamp: {{date non_unix_ts_var "d/m/Y" "convert"}} <!-- add the "convert" parameter to convert the variable to unix time using strtotime() -->
 ```
 The `#is` block helper allows for basic conditional logic:
-```html
+```handlebars
 Is it 1981? {{#is locals.year "==" "1981"}} Yes! {{else}} No! {{/is}}
 ```
 
@@ -179,3 +179,132 @@ echo render::lightncandy_html($args)($data);
 
 ## render::initialize_handlebars_helpers()
 For internal use by `lightncandy_html()`. Defines a couple custom Handlebars helper functions to be used by the LightnCandy compiler.
+
+
+
+
+
+
+
+# Components
+
+We've also created a `component` helper, which allows you to define components that accept props and handle asset management. Components are stored in the `templates/_components` directory and can include both a template file (`[name].html`) and an optional assets file (`[name].assets.html`).
+
+Here are some examples of how to use components:
+
+### Basic Card Component Example
+```handlebars
+{{{component "card" title="My Card Title"}}}
+  <p>This is the slot content that will appear inside the card.</p>
+  <p>You can put any HTML content here.</p>
+{{{/component}}}
+```
+
+### Input Component with All Attributes
+```handlebars
+{{{component "input" 
+  label="Username" 
+  type="text" 
+  width="w-80" 
+  padding="pa3"
+  name="username" 
+  value="john_doe"
+}}}
+```
+
+### Nested Components (Card containing Inputs)
+```handlebars
+{{{component "card" title="User Profile"}}}
+  {{{component "input" 
+    label="Full Name" 
+    type="text" 
+    width="w-100" 
+    name="fullname" 
+    value=user.fullname
+  }}}
+  
+  {{{component "input" 
+    label="Email" 
+    type="email" 
+    width="w-100" 
+    name="email" 
+    value=user.email
+  }}}
+{{{/component}}}
+```
+
+### Dynamic Values from Context
+```handlebars
+{{{component "input" 
+  label="Search" 
+  type="search" 
+  width="w-100" 
+  name="query" 
+  value=search.query
+}}}
+```
+
+### Multiple Components with Different Styles
+```handlebars
+{{{component "input" 
+  label="Small Input" 
+  type="text" 
+  width="w-30" 
+  padding="pa2"
+  name="small" 
+  value="small value"
+}}}
+
+{{{component "input" 
+  label="Large Input" 
+  type="text" 
+  width="w-100" 
+  padding="pa4"
+  name="large" 
+  value="large value"
+}}}
+```
+
+### Form with Multiple Components
+```handlebars
+<form action="/submit" method="post">
+  {{{component "input" 
+    label="First Name" 
+    type="text" 
+    width="w-50" 
+    name="firstName" 
+    value=form.firstName
+  }}}
+  
+  {{{component "input" 
+    label="Last Name" 
+    type="text" 
+    width="w-50" 
+    name="lastName" 
+    value=form.lastName
+  }}}
+  
+  {{{component "input" 
+    label="Password" 
+    type="password" 
+    width="w-100" 
+    name="password" 
+    value=""
+  }}}
+</form>
+```
+
+Key features of the component helper:
+- Use triple curly braces `{{{component}}}` to ensure HTML is not escaped
+- The first argument is the component name (e.g., "card" or "input")
+- All other attributes are passed as hash parameters
+- For components that support slots (like the card), content between the opening and closing tags will be placed where `{{slot}}` appears in the template
+- Assets (like CSS and JS) are automatically loaded if they exist in the component's assets file
+- The component helper caches templates and assets for better performance
+
+The component helper will automatically:
+- Load the template from `templates/_components/[name].html`
+- Load assets from `templates/_components/[name].assets.html` if they exist
+- Replace variables in the template with provided values
+- Handle slot content if present
+- Cache templates and assets for better performance
