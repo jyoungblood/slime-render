@@ -85,7 +85,7 @@ class render {
       }
     }; 
 
-    $GLOBALS['hbars_helpers']['@'] = function() {
+    $GLOBALS['hbars_helpers']['component'] = function() {
       static $template_cache = [];
       static $loaded_assets = [];
       static $component_paths = [];
