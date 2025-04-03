@@ -12,11 +12,36 @@ namespace Slime;
 
 use LightnCandy\LightnCandy;
 
-use eftec\bladeone\BladeOne;
-use eftec\bladeonehtml\BladeOneHtml;
-class BladeHTML extends BladeOne {
-  use BladeOneHtml;
-}
+// use eftec\bladeone\BladeOne;
+// use eftec\bladeonehtml\BladeOneHtml;
+
+// class BladeHTML extends BladeOne {
+//   // Conditionally use BladeOneHtml trait if available
+//   public function __construct($views, $cache, $mode = 0) {
+//     parent::__construct($views, $cache, $mode);
+    
+//     // Check if BladeOneHtml trait is available
+//     if (class_exists('eftec\bladeonehtml\BladeOneHtml')) {
+//       $this->useBladeOneHtml();
+//     }
+//   }
+  
+//   // Helper method to use the trait
+//   private function useBladeOneHtml() {
+//     // This method uses the trait at runtime
+//     $trait = new \ReflectionClass('eftec\bladeonehtml\BladeOneHtml');
+//     $methods = $trait->getMethods(\ReflectionMethod::IS_PUBLIC);
+    
+//     foreach ($methods as $method) {
+//       $methodName = $method->getName();
+//       if (!method_exists($this, $methodName)) {
+//         $this->$methodName = function(...$args) use ($methodName) {
+//           return BladeOneHtml::$methodName(...$args);
+//         };
+//       }
+//     }
+//   }
+// }
 
 class render {
 
@@ -248,25 +273,25 @@ class render {
     return $res->withHeader('Content-Type', 'text/plain')->withStatus($status);
   }
 
-  // return a rendered Blade template
-  public static function blade_template($template, $data = []){
-    // $blade = new BladeOne('./views','./cache',BladeOne::MODE_DEBUG); // MODE_DEBUG allows to pinpoint troubles.
-    $blade = new BladeHTML('./views','./cache');
-    $blade->pipeEnable=true;
-    return $blade->run($template, $data);
-  }
+  // // return a rendered Blade template
+  // public static function blade_template($template, $data = []){
+  //   // $blade = new BladeOne('./views','./cache',BladeOne::MODE_DEBUG); // MODE_DEBUG allows to pinpoint troubles.
+  //   $blade = new BladeHTML('./views','./cache');
+  //   $blade->pipeEnable=true;
+  //   return $blade->run($template, $data);
+  // }
 
-  // return a rendered Blade template
-  public static function blade($req, $res, $args, $status = 200){
-    $body = $res->getBody();
-    $body->write(
-      render::blade_template(
-        $args['template'],
-        $args['data']
-      )
-    );
-    return $res->withStatus($status);
-  }
+  // // return a rendered Blade template
+  // public static function blade($req, $res, $args, $status = 200){
+  //   $body = $res->getBody();
+  //   $body->write(
+  //     render::blade_template(
+  //       $args['template'],
+  //       $args['data']
+  //     )
+  //   );
+  //   return $res->withStatus($status);
+  // }
   
 }
 
