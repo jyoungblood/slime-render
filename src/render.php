@@ -2,7 +2,7 @@
 
 /**
  * @package    SLIME Render
- * @version    1.4.0
+ * @version    1.4.1
  * @author     Jonathan Youngblood <jy@hxgf.io>
  * @license    https://github.com/hxgf/slime-render/blob/master/LICENSE.md (MIT License)
  * @source     https://github.com/hxgf/slime-render
@@ -110,8 +110,15 @@ class render {
       }
     }; 
 
+    $GLOBALS['hbars_helpers']['concat'] = function() {
+        $args = func_get_args();
+        $options = array_pop($args); // Remove the last argument which is the options array
+        return implode('', $args);
+    };
+
     $GLOBALS['hbars_helpers']['component'] = function() {
       static $template_cache = [];
+      static $compiled_cache = [];
       static $loaded_assets = [];
       static $component_paths = [];
       
@@ -119,11 +126,18 @@ class render {
       $options = end($args);
       $root = $options['data']['root'] ?? [];
       
+      // error_log("DEBUG KOMPONENT START ----------------------------------------");
+      // error_log("Args received: " . print_r($args, true));
+      // error_log("Options: " . print_r($options, true));
+      // error_log("Root data: " . print_r($root, true));
+      
       // Get component name - early return if invalid
       $component_name = $args[0] ?? null;
       if (!$component_name) {
         return 'ERROR: No component name provided';
       }
+      
+      // error_log("Component name: " . $component_name);
       
       // Cache component paths
       if (!isset($component_paths[$component_name])) {
@@ -137,10 +151,12 @@ class render {
       
       // Get cached paths
       $paths = $component_paths[$component_name];
+      // error_log("Component paths: " . print_r($paths, true));
       
       // Load template - early return if not found
       if (!isset($template_cache[$paths['template']])) {
         if (!file_exists($paths['template'])) {
+          // error_log("ERROR: Template file not found at " . $paths['template']);
           return "ERROR: Component not found at {$paths['template']}";
         }
         $template_cache[$paths['template']] = file_get_contents($paths['template']);
@@ -153,32 +169,63 @@ class render {
         $loaded_assets[$component_name] = true;
       }
       
-      // Process template
+      // Get template
       $template = $template_cache[$paths['template']];
+      // error_log("Raw template content: " . $template);
       
-      // Handle slot content if present
-      if (isset($options['fn']) && is_callable($options['fn'])) {
-        $template = str_replace('{{slot}}', $options['fn']($root), $template);
-      }
-      
-      // Process hash values efficiently
+      // Prepare data context by merging root data with hash values BEFORE handling slot
+      $context = $root;
       if (!empty($options['hash'])) {
-        $replacements = [];
         foreach ($options['hash'] as $key => $value) {
           if (is_array($value) && isset($value['lookupType']) && $value['lookupType'] === 'lookup') {
-            $value = ($value['context'] ?? $root)[$value['key'] ?? ''] ?? '';
+            $context[$key] = ($value['context'] ?? $root)[$value['key'] ?? ''] ?? '';
+          } else {
+            $context[$key] = $value;
           }
-          $replacements['{{'.$key.'}}'] = $value ?? '';
         }
-        
-        // Single strtr() call is faster than multiple str_replace()
-        $template = strtr($template, $replacements);
       }
       
-      // Clean up remaining variables with single regex
-      $template = preg_replace('/{{[^}]+}}/', '', $template);
+      // Handle slot content if present - now using merged context
+      if (isset($options['fn']) && is_callable($options['fn'])) {
+        $template = str_replace('{{slot}}', $options['fn']($context), $template);
+        // error_log("Template after slot processing: " . $template);
+      }
       
-      return $assets_html . $template;
+      // error_log("Final context data: " . print_r($context, true));
+      // error_log("Available helpers: " . print_r(array_keys($GLOBALS['hbars_helpers']), true));
+      
+      try {
+        // error_log("Attempting to compile template...");
+        
+        // Match exactly how render.php does it
+        $compiled = \LightnCandy\LightnCandy::compile($template, array(
+          "flags" => \LightnCandy\LightnCandy::FLAG_HANDLEBARS,
+          "helpers" => $GLOBALS['hbars_helpers']
+        ));
+        
+        if ($compiled === false) {
+          // error_log("ERROR: Compilation failed");
+          return 'ERROR: Failed to compile template';
+        }
+        
+        // error_log("Compiled template: " . $compiled);
+        
+        // Then prepare it
+        $renderer = \LightnCandy\LightnCandy::prepare($compiled);
+        // error_log("Renderer created successfully");
+        
+        // Finally render it
+        $result = $renderer($context);
+        // error_log("Render result: " . $result);
+        
+        // error_log("DEBUG KOMPONENT END ----------------------------------------");
+        return $assets_html . $result;
+        
+      } catch (Exception $e) {
+        error_log("ERROR: Exception during compilation/rendering: " . $e->getMessage());
+        error_log($e->getTraceAsString());
+        return 'ERROR: Template processing failed: ' . $e->getMessage();
+      }
     };
 
   }

@@ -116,6 +116,12 @@ The `#is` block helper allows for basic conditional logic:
 Is it 1981? {{#is locals.year "==" "1981"}} Yes! {{else}} No! {{/is}}
 ```
 
+The `concat` helper concatenates any number of strings and HBS variable data
+```
+{{concat "/blog/edit/" data._id}}
+<!-- renders: "/blog/edit/123123123123 -->
+```
+
 Custom helpers are easy to create. Take a look at how these helpers are defined in [initialize_handlebars_helpers()](https://github.com/jyoungblood/slime-render/blob/74e6e4a89a90a2490196a4d50d7466855820dd3a/src/render.php#L46). The Handlebars cookbook also has a reference for creating [custom helpers](https://zordius.github.io/HandlebarsCookbook/0021-customhelper.html) and [custom block helpers](https://zordius.github.io/HandlebarsCookbook/0022-blockhelper.html).
 
 ## render::handlebars($parameters)
@@ -194,7 +200,7 @@ Here are some examples of how to use components:
 
 
 
-### Simple Component
+## Simple Component
 In the primary template:
 ```handlebars
 {{{component "input" 
@@ -224,13 +230,26 @@ In `templates/_components/input.assets.html`:
 ```
 
 
-### Slot Component
+Using simple component with HBS variables using the `concat` helper:
+```
+{{{component "form/button-save"
+  type="article"
+  url="/blog/save"
+  redirect=(concat "/blog/edit/" data._id)
+  label="<i class=\"fas fa-redo-alt mr1\"></i> Save & Reload"}}}
+```
+
+
+
+
+
+## Slot Component
 In the primary template:
 ```handlebars
-{{{component "card" title="My Card Title"}}}
+{{component "card" title="My Card Title"}}
   <p>This is the slot content that will appear inside the card.</p>
   <p>You can put any HTML content here.</p>
-{{{/component}}}
+{{/component}}
 ```
 
 In `templates/_components/card.html`:
@@ -244,9 +263,36 @@ In `templates/_components/card.html`:
 ```
 
 
-### Nested Components (Card containing Inputs)
+
+
+Slot components can use HBS variables as one might expect:
+
+```
+{{#component "list-table" id="list-articles" articles=articles table_columns=table_columns}}
+    {{#each articles}}
+      <tr class="{{#unless published}}inactive{{/unless}}">
+        <td class="pa1 pa3-ns fw7 sort-title">
+          {{#if title}}{{title}}{{else}}[untitled]{{/if}}
+        </td>
+        <td class="pa1 pa3-ns sort-author">
+          {{screenname}}
+        </td>
+        <td class="pa1 pa3-ns sort-date-published" data-date-published="{{date date_published "y-m-d"}}">
+          {{#if published}}{{date date_published "m/d/Y"}}{{/if}}
+        </td>
+        <td class="pa1 pa3-ns tr">
+          <a class="pa2 f7 no-underline white fw7 br2 bg-ocean-blue dib nowrap" href="/blog/edit/{{_id}}"><i class="fas fa-pencil-alt mr1" aria-hidden="true"></i> Edit</a>
+        </td>
+      </tr>
+    {{/each}}
+{{/component}}
+```
+
+
+
+Components can also be nested within slot components:
 ```handlebars
-{{{component "card" title="User Profile"}}}
+{{component "card" title="User Profile"}}
   {{{component "input" 
     label="Full Name" 
     type="text" 
@@ -262,8 +308,16 @@ In `templates/_components/card.html`:
     name="email" 
     value=user.email
   }}}
-{{{/component}}}
+{{/component}}
 ```
+
+
+
+
+
+
+
+
 
 
 Key features of the component helper:
